@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from '../firebase/firebase.config';
 import { toast } from 'react-toastify';
 import { FaEye } from 'react-icons/fa';
@@ -15,9 +15,10 @@ const Signup = () => {
     const handleSignup = (e)=> {
         e.preventDefault();
         const name = e.target.name?.value;
+        const photo = e.target.photo?.value;
         const email = e.target.email?.value;
         const password = e.target.password?.value;
-        // console.log("signup function entered.", {name, email, password});
+        console.log("signup function entered.", {name, photo, email, password});
 
         if(password.length < 8){
             toast.error("Password should be at least 6 Digit.");
@@ -37,8 +38,14 @@ const Signup = () => {
 
 
         createUserWithEmailAndPassword(auth, email, password).then(res => {
-            console.log(res);
-            toast.success("Signup Successfull!")
+            updateProfile(res.user, {
+                 displayName: name, photoURL: photo,
+            }).then(res => {
+                console.log(res);
+                toast.success("Signup Successfull!")
+            }).catch((e)=> {
+                toast.error(e.message);
+            })
 
         })
         .catch((e)=>{
@@ -93,10 +100,16 @@ const Signup = () => {
             <div className="card-body">
                 <form onSubmit={handleSignup} > 
                 <fieldset className="fieldset text-white">
+                {/* Name */}
                 <label className="label">Name</label>
                 <input type="text" name='name' className="input bg-white/10 backdrop-blur-sm" placeholder="Your name" />
+                {/* PhotoURL */}
+                <label className="label">PhotoURL</label>
+                <input type="text" name='photo' className="input bg-white/10 backdrop-blur-sm" placeholder="Your PhotoURL" />
+                {/* Email */}
                 <label className="label">Email</label>
                 <input type="email" name='email' className="input bg-white/10 backdrop-blur-sm" placeholder="Email" />
+                {/* Password */}
                 <label className="label">Password</label>
                <div className='relative'>
                  <input type={show? "text": "password"} name='password' className="input bg-white/10 backdrop-blur-sm" placeholder="Password" />

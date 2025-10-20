@@ -40,6 +40,7 @@ const Signin = () => {
         .then(res => {
                 console.log(res);
                 setUser(res.user);
+                console.log(res.user);
                 toast.success("Signin with GitHub Successfull!");
             })
             .catch((e)=>{
