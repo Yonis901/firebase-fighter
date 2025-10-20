@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth } from '../firebase/firebase.config';
 import { toast } from 'react-toastify';
 import { FaEye } from 'react-icons/fa';
@@ -36,13 +36,20 @@ const Signup = () => {
 
 
 
-
+        // Step 1: create user
         createUserWithEmailAndPassword(auth, email, password).then(res => {
+            // Step-2:  Uptade Profile 
             updateProfile(res.user, {
                  displayName: name, photoURL: photo,
             }).then(res => {
-                console.log(res);
-                toast.success("Signup Successfull!")
+                // Step-3: Email Verification 
+                sendEmailVerification(res.user).then(res => {
+                    console.log(res);
+                    toast.success("Signup Successfull! Check your Email to Activate your account.");
+                }).catch(e => {
+                    toast.error(e.message);
+                })
+        
             }).catch((e)=> {
                 toast.error(e.message);
             })
