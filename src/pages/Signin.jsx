@@ -1,5 +1,5 @@
-import { GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-import React, { useState } from 'react';
+import { GithubAuthProvider, GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import React, { useRef, useState } from 'react';
 import { FaEye } from 'react-icons/fa';
 import { IoEyeOff } from 'react-icons/io5';
 import { Link } from 'react-router';
@@ -15,6 +15,8 @@ const gitHubProvider = new GithubAuthProvider();
 const Signin = () => {
     const [user, setUser] = useState(null);
      const [show, setShow] = useState(false);
+    //  const [email, setEmail] = useState(null); 
+    const emailRef = useRef(null);
     
     
     
@@ -101,9 +103,17 @@ const handleSignOut = ()=>{
         toast.error(e.message);
     })
 
-
 }
 
+const handleFrogetPassword =()=> {
+console.log(emailRef.current.value);
+const email = emailRef.current.value;
+ sendPasswordResetEmail(auth, email).then(() => {
+    toast.success("Check you email to reset password.");
+ }).catch(e=> {
+    toast.error(e.message);
+ })
+};
 
 
     return (
@@ -134,7 +144,7 @@ const handleSignOut = ()=>{
                 <form onSubmit={handleSignin} > 
                 <fieldset className="fieldset text-white">
                 <label className="label">Email</label>
-                <input type="email" name='email' className="input bg-white/10 backdrop-blur-sm" placeholder="Email" />
+                <input ref={emailRef} type="email" name='email' className="input bg-white/10 backdrop-blur-sm" placeholder="Email" />
                 <label className="label">Password</label>
                <div className='relative'>
                  <input type={show? "text": "password"} name='password' className="input bg-white/10 backdrop-blur-sm" placeholder="Password" />
@@ -142,7 +152,7 @@ const handleSignOut = ()=>{
                     {show? <FaEye/>: <IoEyeOff/>}
                  </span>
                </div>
-                <div><a className="link link-hover">Forgot password?</a></div>
+                <div><button onClick={handleFrogetPassword} type='button' className="link link-hover">Forgot password?</button></div>
                 <button className="btn btn-neutral mt-4">Sign in</button>
                 </fieldset>
                 <p className='text-white'>New to our webstie? <Link to={"/signup"} className="hover:text-purple-500 text-white">SignUp</Link></p>
