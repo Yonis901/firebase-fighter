@@ -41,7 +41,7 @@ const Signup = () => {
             // Step-2:  Uptade Profile 
             updateProfile(res.user, {
                  displayName: name, photoURL: photo,
-            }).then(res => {
+            }).then(() => {
                 // Step-3: Email Verification 
                 sendEmailVerification(res.user).then(res => {
                     console.log(res);

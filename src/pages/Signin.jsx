@@ -75,6 +75,10 @@ const Signin = () => {
     
     
             signInWithEmailAndPassword(auth, email, password).then(res => {
+                if(!res.user?.emailVerified){
+                    toast.error("Your email is not verified.")
+                    return;
+                }
                 console.log(res);
                 setUser(res.user);
                 toast.success("Signin Successfull!");
@@ -84,8 +88,7 @@ const Signin = () => {
                toast.error(e.message);
             })
         };
-    
-    
+
 
 const handleSignOut = ()=>{
 
